@@ -1,0 +1,6 @@
+{
+  "name": "My Tasks",
+  "description": "Ứng dụng quản lý công việc My Tasks với giao diện Material Design tiếng Việt, hỗ trợ thêm, sửa, xóa, tích hoàn thành, chọn ngày giờ và thông báo trực quan.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
