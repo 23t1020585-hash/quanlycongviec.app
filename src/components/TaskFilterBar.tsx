@@ -1,5 +1,7 @@
-import { Search, X, ArrowUpDown, Filter, CheckCircle2, Clock, Calendar } from 'lucide-react';
+import { Search, X, ArrowUpDown, CheckCircle2, Clock, BookOpen, Briefcase, AlertCircle } from 'lucide-react';
+import { motion } from 'motion/react';
 import { FilterType, SortType } from '../types';
+import { Sound } from '../utils/soundEffects';
 
 interface TaskFilterBarProps {
   searchQuery: string;
@@ -12,7 +14,9 @@ interface TaskFilterBarProps {
     all: number;
     pending: number;
     completed: number;
-    today: number;
+    study?: number;
+    work?: number;
+    high_priority?: number;
   };
 }
 
@@ -25,8 +29,13 @@ export default function TaskFilterBar({
   onSortChange,
   counts,
 }: TaskFilterBarProps) {
+  const handleFilterClick = (filter: FilterType) => {
+    Sound.playTap();
+    onFilterChange(filter);
+  };
+
   return (
-    <div className="space-y-2.5 mb-4">
+    <div className="space-y-2 mb-3">
       {/* Search Input Box */}
       <div className="relative flex items-center">
         <div className="absolute left-3 text-gray-400 pointer-events-none">
@@ -42,7 +51,10 @@ export default function TaskFilterBar({
         />
         {searchQuery && (
           <button
-            onClick={() => onSearchChange('')}
+            onClick={() => {
+              Sound.playTap();
+              onSearchChange('');
+            }}
             className="absolute right-2.5 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200/60"
             title="Xóa tìm kiếm"
           >
@@ -55,9 +67,10 @@ export default function TaskFilterBar({
       <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-0.5">
         {/* Filter Chips */}
         <div className="flex items-center gap-1.5 shrink-0">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             id="filter-chip-all"
-            onClick={() => onFilterChange('all')}
+            onClick={() => handleFilterClick('all')}
             className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 transition-all ${
               activeFilter === 'all'
                 ? 'bg-[#6750A4] text-white shadow-xs'
@@ -72,11 +85,12 @@ export default function TaskFilterBar({
             >
               {counts.all}
             </span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             id="filter-chip-pending"
-            onClick={() => onFilterChange('pending')}
+            onClick={() => handleFilterClick('pending')}
             className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 transition-all ${
               activeFilter === 'pending'
                 ? 'bg-[#6750A4] text-white shadow-xs'
@@ -92,11 +106,12 @@ export default function TaskFilterBar({
             >
               {counts.pending}
             </span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             id="filter-chip-completed"
-            onClick={() => onFilterChange('completed')}
+            onClick={() => handleFilterClick('completed')}
             className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 transition-all ${
               activeFilter === 'completed'
                 ? 'bg-[#6750A4] text-white shadow-xs'
@@ -112,7 +127,26 @@ export default function TaskFilterBar({
             >
               {counts.completed}
             </span>
-          </button>
+          </motion.button>
+
+          {typeof counts.high_priority === 'number' && counts.high_priority > 0 && (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              id="filter-chip-high"
+              onClick={() => handleFilterClick('high_priority')}
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 transition-all ${
+                activeFilter === 'high_priority'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'bg-rose-50 hover:bg-rose-100 text-rose-700'
+              }`}
+            >
+              <AlertCircle className="w-3 h-3" />
+              <span>Gấp</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-rose-200 text-rose-900 font-bold">
+                {counts.high_priority}
+              </span>
+            </motion.button>
+          )}
         </div>
 
         {/* Sort Dropdown */}
@@ -122,7 +156,10 @@ export default function TaskFilterBar({
             <select
               id="task-sort-select"
               value={activeSort}
-              onChange={(e) => onSortChange(e.target.value as SortType)}
+              onChange={(e) => {
+                Sound.playTap();
+                onSortChange(e.target.value as SortType);
+              }}
               aria-label="Sắp xếp danh sách công việc"
               className="bg-transparent text-[11px] font-semibold text-gray-700 focus:outline-none cursor-pointer pr-1"
             >

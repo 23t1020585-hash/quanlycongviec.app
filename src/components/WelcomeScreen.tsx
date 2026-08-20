@@ -3,6 +3,7 @@ import { CheckCircle2, Sparkles, ArrowRight, User, GraduationCap, Target } from 
 import { UserProfile } from '../types';
 
 interface WelcomeScreenProps {
+  key?: string;
   initialProfile?: UserProfile;
   onContinue: (profile: UserProfile) => void;
   onSkip?: () => void;
